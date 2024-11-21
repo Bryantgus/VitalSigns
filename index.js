@@ -4,9 +4,7 @@ import txtManagement from './utilidades/manejoDeArchivoTXT.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: ['https://vitalsignsweb.onrender.com', 'http://localhost:5173']
-}));
+app.use(cors()); 
 var data = {
   bpm: 'off',
   o2: 'off',
