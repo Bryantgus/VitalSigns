@@ -2,8 +2,9 @@ import express from 'express';
 import cors from "cors";
 import txtManagement from './utilidades/manejoDeArchivoTXT.js';  
 const app = express();
-const port = 3000;
-const host = '0.0.0.0';
+const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 var data = {
   bpm: 'off',
@@ -62,6 +63,4 @@ app.post('/sendsigns/:bpm/:o2/:temp', (req, res) => {
   
 });
 
-app.listen(port, host, () => {
-  console.log(`Servidor escuchando en http://${host}:${port}`);
-});
+app.listen(port, () => console.log(`Server running on port ${port}`));
