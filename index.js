@@ -4,7 +4,7 @@ import txtManagement from './utilidades/manejoDeArchivoTXT.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); 
+
 var data = {
   bpm: 'off',
   o2: 'off',
@@ -17,10 +17,7 @@ var infoPatient = {
   sangre: undefined
 }
 
-
-app.use(cors({
-    origin: 'http://localhost:5173' 
-}));
+app.use(cors()); 
 
 //endopoint para obtener los signos
 app.get('/signs', (req, res) => {
