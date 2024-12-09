@@ -9,9 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Account SID desde Render
-const authToken = process.env.TWILIO_AUTH_TOKEN;     // Lee desde .env
+   // Lee desde .env
 const client = twilio(accountSid, authToken);
 
 var bfbpm = 0;
@@ -36,6 +34,7 @@ app.get('/signs', (req, res) => {
     if (data.o2 < 70) {
       data.o2 += 20
   }
+}
   if (data.o2 > 70) {
     if (data.o2 < 80) {
       data.o2 += 10
