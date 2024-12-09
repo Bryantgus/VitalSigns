@@ -2,7 +2,7 @@ import express from 'express';
 import cors from "cors";
 import txtManagement from './utilidades/manejoDeArchivoTXT.js';  
 import pool from './db.js';
-import twilio from 'twilio';
+
 
 
 const app = express();
