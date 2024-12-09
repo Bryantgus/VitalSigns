@@ -14,6 +14,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Account SID desde Render
 const authToken = process.env.TWILIO_AUTH_TOKEN;     // Lee desde .env
 const client = twilio(accountSid, authToken);
 
+var bfbpm = 0;
 var data = {
   bpm: "off",
   o2: "off",
@@ -24,7 +25,32 @@ app.use(cors());
 
 //endopoint para obtener los signos
 app.get('/signs', (req, res) => {
- const date = new Date();
+  const date = new Date();
+  
+  if (data.o2 > 50) {
+    if (data.o2 < 60){
+      data.o2 += 30
+  }
+    }
+  if (data.o2 > 60) {
+    if (data.o2 < 70) {
+      data.o2 += 20
+  }
+  if (data.o2 > 70) {
+    if (data.o2 < 80) {
+      data.o2 += 10
+    }
+  }
+  if (data.o2 > 80) {
+    if (data.o2 < 90) {
+      data.o2 += 5
+    }
+  }
+
+  if (data.bpm < 60) {
+    data.bpm = 61;
+  }
+
  const responseData = {
     bmp: data.bpm,
     o2: data.o2,
@@ -153,6 +179,8 @@ app.post('/changeemergenciaemail/:id/:email1/:email2/:email3/:email4', async (re
 //endpoint que usara el esp32 para mandar la informacion a la api
 app.post('/sendsigns/:bpm/:o2/:temp', (req, res) => {
   const date = new Date();
+
+  bfbpm = data.bpm;
   data.bpm = req.params.bpm;
   data.o2 = req.params.o2;
   data.temp = req.params.temp;
