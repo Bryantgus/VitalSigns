@@ -123,7 +123,7 @@ app.post('/changeemergencianum/:id/:num1/:num2/:num3/:num4', async (req, res) =>
   }
 });
 
-app.post('/saveemails/:id/:email1/:email2/:email3/:email4', async (req, res) => {
+app.post('/changeemergenciaemail/:id/:email1/:email2/:email3/:email4', async (req, res) => {
   const { id, email1, email2, email3, email4 } = req.params; // Extraemos los parámetros de la URL
 
   try {
@@ -161,7 +161,7 @@ app.post('/sendsigns/:bpm/:o2/:temp', (req, res) => {
 });
 
 // Endpoint GET para obtener los correos electrónicos guardados
-app.get('/getemails/:id', async (req, res) => {
+app.get('/emergenciaemail/:id', async (req, res) => {
   const { id } = req.params; // Extraemos el parámetro id
 
   try {
