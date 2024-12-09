@@ -3,14 +3,16 @@ import cors from "cors";
 import txtManagement from './utilidades/manejoDeArchivoTXT.js';  
 import pool from './db.js';
 import twilio from 'twilio';
+
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 
 
-// const accountSid = 'ACc9f5fb7674f9a322979b59c9de211ca8';  // Reemplaza con tu Account SID
-// const authToken = '04251877d6c88bbc05a1e02c392aa971';    // Reemplaza con tu Auth Token
-// const client = twilio(accountSid, authToken);
+const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Account SID desde Render
+const authToken = process.env.TWILIO_AUTH_TOKEN;     // Lee desde .env
+const client = twilio(accountSid, authToken);
 
 var data = {
   bpm: "off",
@@ -69,7 +71,7 @@ app.post('/changeinfopatient/:id/:nombre/:sexo/:edad/:sangre', async (req, res) 
 });
 
 
-app.get('/emergencianum', async (req, res) => {
+app.get('/makeemergencianum', async (req, res) => {
   try {
     // Consulta a la base de datos
     const result = await pool.query('SELECT * FROM emergencianum');
