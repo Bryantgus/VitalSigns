@@ -2,9 +2,15 @@ import express from 'express';
 import cors from "cors";
 import txtManagement from './utilidades/manejoDeArchivoTXT.js';  
 import pool from './db.js';
+import twilio from 'twilio';
 const app = express();
 const port = process.env.PORT || 3000;
 
+
+
+const accountSid = 'ACc9f5fb7674f9a322979b59c9de211ca8';  // Reemplaza con tu Account SID
+const authToken = '04251877d6c88bbc05a1e02c392aa971';    // Reemplaza con tu Auth Token
+const client = twilio(accountSid, authToken);
 
 var data = {
   bpm: "off",
@@ -65,11 +71,31 @@ app.post('/changeinfopatient/:id/:nombre/:sexo/:edad/:sangre', async (req, res) 
 
 app.get('/emergencianum', async (req, res) => {
   try {
+    // Consulta a la base de datos
     const result = await pool.query('SELECT * FROM emergencianum');
-    res.json(result.rows);  // Devolvemos los datos de la tabla como JSON
+    const emergencies = result.rows;
+
+    // Iteramos cada registro y enviamos mensajes
+    for (const emergency of emergencies) {
+      const { num1, num2, num3, num4 } = emergency;
+
+      // Filtramos números válidos (excluyendo "0" o valores nulos)
+      const phoneNumbers = [num1, num2, num3, num4].filter(num => num && num !== '0');
+
+      // Enviar mensajes a cada número filtrado
+      for (const number of phoneNumbers) {
+        await client.messages.create({
+          body: 'Mensaje de emergencia desde tu aplicación.',  // Personaliza tu mensaje
+          from: '+12408016639',  // Reemplaza con tu número de Twilio
+          to: number,
+        });
+      }
+    }
+
+    res.status(200).send('Mensajes enviados correctamente');
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener datos de la base de datos');
+    console.error('Error al enviar mensajes:', err);
+    res.status(500).send('Error al enviar mensajes');
   }
 });
 
@@ -97,6 +123,29 @@ app.post('/changeemergencianum/:id/:num1/:num2/:num3/:num4', async (req, res) =>
   }
 });
 
+app.post('/saveemails/:id/:email1/:email2/:email3/:email4', async (req, res) => {
+  const { id, email1, email2, email3, email4 } = req.params; // Extraemos los parámetros de la URL
+
+  try {
+    // Realizamos la consulta SQL para actualizar los correos en la tabla 'correos_emails'
+    const result = await pool.query(
+      'UPDATE correos_emails SET email1 = $1, email2 = $2, email3 = $3, email4 = $4 WHERE id = $5',
+      [email1, email2, email3, email4, id]  // Los valores que se van a actualizar
+    );
+    
+    console.log('Resultado de la consulta:', result);
+
+    // Si la fila fue actualizada correctamente, se devuelve el mensaje
+    if (result.rowCount > 0) {
+      res.json({ message: 'Correos electrónicos actualizados correctamente', result });
+    } else {
+      res.status(404).send('No se encontró el registro con ese ID');
+    }
+  } catch (err) {
+    console.error('Error al actualizar los correos electrónicos:', err);
+    res.status(500).send('Error al actualizar los correos electrónicos');
+  }
+});
 
 
 //endpoint que usara el esp32 para mandar la informacion a la api
@@ -109,6 +158,26 @@ app.post('/sendsigns/:bpm/:o2/:temp', (req, res) => {
   const datos = req;
   txtManagement(req.params.bpm, req.params.o2, req.params.temp);
   
+});
+
+// Endpoint GET para obtener los correos electrónicos guardados
+app.get('/getemails/:id', async (req, res) => {
+  const { id } = req.params; // Extraemos el parámetro id
+
+  try {
+    // Realizamos la consulta SQL para obtener los correos electrónicos del ID dado
+    const result = await pool.query('SELECT * FROM correos_emails WHERE id = $1', [id]);
+
+    // Si se encontraron correos electrónicos para ese ID
+    if (result.rows.length > 0) {
+      res.json({ emails: result.rows });
+    } else {
+      res.status(404).send('No se encontraron correos para este ID');
+    }
+  } catch (err) {
+    console.error('Error al obtener los correos:', err);
+    res.status(500).send('Error al obtener los correos electrónicos');
+  }
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
