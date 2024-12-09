@@ -96,35 +96,6 @@ app.post('/changeinfopatient/:id/:nombre/:sexo/:edad/:sangre', async (req, res) 
 });
 
 
-// app.get('/makeemergencianum', async (req, res) => {
-//   try {
-//     // Consulta a la base de datos
-//     const result = await pool.query('SELECT * FROM emergencianum');
-//     const emergencies = result.rows;
-
-//     // Iteramos cada registro y enviamos mensajes
-//     for (const emergency of emergencies) {
-//       const { num1, num2, num3, num4 } = emergency;
-
-//       // Filtramos números válidos (excluyendo "0" o valores nulos)
-//       const phoneNumbers = [num1, num2, num3, num4].filter(num => num && num !== '0');
-
-//       // Enviar mensajes a cada número filtrado
-//       for (const number of phoneNumbers) {
-//         await client.messages.create({
-//           body: 'Mensaje de emergencia desde tu aplicación.',  // Personaliza tu mensaje
-//           from: '+12408016639',  // Reemplaza con tu número de Twilio
-//           to: number,
-//         });
-//       }
-//     }
-
-//     res.status(200).send('Mensajes enviados correctamente');
-//   } catch (err) {
-//     console.error('Error al enviar mensajes:', err);
-//     res.status(500).send('Error al enviar mensajes');
-//   }
-// });
 
 app.post('/changeemergencianum/:id/:num1/:num2/:num3/:num4', async (req, res) => {
   const { id, num1, num2, num3, num4 } = req.params; // Extraemos los parámetros de la URL
