@@ -8,9 +8,9 @@ const port = process.env.PORT || 3000;
 
 
 
-const accountSid = 'ACc9f5fb7674f9a322979b59c9de211ca8';  // Reemplaza con tu Account SID
-const authToken = '04251877d6c88bbc05a1e02c392aa971';    // Reemplaza con tu Auth Token
-const client = twilio(accountSid, authToken);
+// const accountSid = 'ACc9f5fb7674f9a322979b59c9de211ca8';  // Reemplaza con tu Account SID
+// const authToken = '04251877d6c88bbc05a1e02c392aa971';    // Reemplaza con tu Auth Token
+// const client = twilio(accountSid, authToken);
 
 var data = {
   bpm: "off",
